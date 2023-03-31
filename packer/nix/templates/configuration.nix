@@ -28,12 +28,39 @@
     initialPassword = "password";
     extraGroups = [
       "wheel"
+      "docker"
     ];
     uid = 1000;
   };
 
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  services = {
+    openssh.enable = true;
+    qemuGuest.enable = true;
+    xserver = {
+      enable = true;
+      desktopManager = {
+        xterm.enable = false;
+        xfce.enable = true;
+      };
+      displayManager.defaultSession = "xfce";
+    };
+  };
 
-  services.qemuGuest.enable = true;
+  networking = {
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 80 443 ];
+    };
+  };
+
+  # Set docker 
+  virtualisation.docker = {
+    enable = true;
+    # Allow docker to use btrfs
+    storageDriver = "btrfs";
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
+  };
 }

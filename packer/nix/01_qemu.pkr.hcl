@@ -1,5 +1,6 @@
-source "qemu" "nixosimage" {
+source "qemu" "nixos" {
   boot_command = local.boot_command
+  accelerator  = "kvm"
 
   boot_wait         = "45s"
   boot_key_interval = "10ms"
@@ -32,5 +33,5 @@ source "qemu" "nixosimage" {
 }
 
 build {
-  sources = ["source.qemu.nixosimage"]
+  sources = ["source.qemu.nixos"]
 }

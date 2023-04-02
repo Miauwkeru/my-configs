@@ -1,0 +1,26 @@
+{ config, pkgs, ...}:
+
+{
+  xsession.enable = true;
+  xdg.enable = true;
+
+  # Enable bash
+  programs = {
+    bash = {
+      enable = true;
+      initExtra = ''
+      . "/etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh"
+      '';
+    };
+  };
+
+  fonts.fontconfig.enable = true;
+  services.gnome-keyring.enable = true;
+
+  programs.home-manager.enable = true;
+  home = {
+    username = "${user}";
+    homeDirectory = "/home/${user}";
+    stateVersion = "22.11";
+  };
+}

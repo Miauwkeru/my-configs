@@ -4,6 +4,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    <home-manager/nixos>
   ];
 
   # Use the GRUB 2 boot loader.
@@ -11,27 +12,10 @@
   boot.loader.grub.version = 2;
   boot.loader.grub.device = "/dev/vda";
 
-
   # Install minimal packages needed for provisioning
   environment.systemPackages = with pkgs; [
     git
   ];
-
-  # Turn off mutable users so `nixos-install` does not prompt to set a password
-  users.mutableUsers = false;
-
-  # Create my personal user
-  # The password should be changed later
-  users.extraUsers.user = {
-    description = "user";
-    isNormalUser = true;
-    initialPassword = "password";
-    extraGroups = [
-      "wheel"
-      "docker"
-    ];
-    uid = 1000;
-  };
 
   services = {
     openssh.enable = true;
@@ -46,12 +30,7 @@
     };
   };
 
-  networking = {
-    firewall = {
-      enable = true;
-      allowedTCPPorts = [ 80 443 ];
-    };
-  };
+  networking.firewall.enable = true;
 
   # Set docker 
   virtualisation.docker = {
@@ -63,4 +42,28 @@
       setSocketVariable = true;
     };
   };
+
+   # Turn off mutable users so `nixos-install` does not prompt to set a password
+  users.mutableUsers = false;
+
+  # Create my personal user
+  # The password should be changed later
+  users.users.${user} = {
+    isNormalUser = true;
+    initialPassword = "password";
+    extraGroups = [
+      "wheel"
+      "docker"
+    ];
+    uid = 1000;
+  };
+
+  # Configure basic home-manager  
+  home-manager = {
+    useUserPackages = true;
+    useGlobalPkgs = true;
+  };
+
+  # Pin the specific state version of NixOS
+  system.stateVersion = "22.11";
 }

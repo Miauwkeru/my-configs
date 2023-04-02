@@ -33,7 +33,7 @@ variable "root_pw" {
   default = "5up3r53cr3tPw"
 }
 
-variable "user_pw" {
+variable "user" {
   type    = string
-  default = "password"
+  default = "user"
 }

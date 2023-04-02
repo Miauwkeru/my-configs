@@ -1,6 +1,10 @@
 { config, pkgs, ...}:
 
 {
+  imports = [
+    ./code.nix
+  ];
+
   xsession.enable = true;
   xdg.enable = true;
 

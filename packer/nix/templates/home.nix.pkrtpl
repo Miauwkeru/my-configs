@@ -9,23 +9,39 @@
   ];
   %{ endif ~}
 
-  xsession.enable = true;
+  xsession = {
+    enable = true;
+    profileExtra = let
+      # Letting xev take control, as the udev rules executed too quickly
+      xrandr-loop = pkgs.writeScriptBin "xrandr-loop" ''
+      #!/bin/sh
+
+      sleep 2
+
+      xrandr --output "$(xrandr | awk '/ connected/{print $1; exit; }')" --auto
+
+      xev -root -event randr | \
+      grep --line-buffered 'subtype XRROutputChangeNotifyEvent' | \
+      while read foo ; do \
+          xrandr --output "$(xrandr | awk '/ connected/{print $1; exit; }')" --auto
+      done
+      '' ;
+    in ''
+    $${xrandr-loop}/bin/xrandr-loop &
+    '';
+  };
+
   xdg.enable = true;
 
   # Enable bash
-  programs = {
-    bash = {
-      enable = true;
-      initExtra = ''
-      . "/etc/profiles/per-user/$USER/etc/profile.d/hm-session-vars.sh"
-      '';
-    };
+  programs { 
+    bash.enable = true;
+    home-manager.enable = true;
   };
 
   fonts.fontconfig.enable = true;
   services.gnome-keyring.enable = true;
 
-  programs.home-manager.enable = true;
   home = {
     username = "${user}";
     homeDirectory = "/home/${user}";

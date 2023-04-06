@@ -37,3 +37,8 @@ variable "user" {
   type    = string
   default = "user"
 }
+
+variable "nix_home_path" {
+  type        = string
+  description = "Path to a nix file direction."
+}

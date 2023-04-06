@@ -27,11 +27,7 @@ source "qemu" "nixos" {
   format         = "qcow2"
   disk_interface = "virtio"
 
-  http_content = {
-    "/configuration.nix" = templatefile("templates/configuration.nix.template", { user = var.user, public_key = data.sshkey.install.public_key }),
-    "/home.nix"          = templatefile("templates/home.nix.template", { user = var.user }),
-    "/code.nix"          = file("templates/code.nix")
-  }
+  http_content = local.http_content
 }
 
 build {

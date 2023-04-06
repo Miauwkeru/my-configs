@@ -1,9 +1,13 @@
 { config, pkgs, ...}:
 
 {
+  %{ if includes != [] ~}
   imports = [
-    ./code.nix
+  %{ for file in includes ~}
+    ./${file}
+  %{ endfor ~}
   ];
+  %{ endif ~}
 
   xsession.enable = true;
   xdg.enable = true;

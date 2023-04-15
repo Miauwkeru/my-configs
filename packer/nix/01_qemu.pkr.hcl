@@ -41,4 +41,8 @@ build {
       "nix-shell -p home-manager --run 'home-manager switch'",
     ]
   }
+
+  post-processor "shell-local" {
+    inline = ["mv ${source.output_directory} ${var.vm_dir}"]
+  }
 }

@@ -40,5 +40,12 @@ variable "user" {
 
 variable "nix_home_path" {
   type        = string
-  description = "Path to a nix file direction."
+  description = "Path to a nix file directory."
+  default     = null
+}
+
+variable "vm_dir" {
+  type        = string
+  description = "Path where the vm will get stored once creation is complete."
+  default     = "~/vms"
 }

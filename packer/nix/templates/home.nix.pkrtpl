@@ -51,8 +51,8 @@
   gtk = {
     enable = true;
     theme = {
-      name = "Materia-dark";
-      package = pkgs.materia-theme;
+      name = "Dracula";
+      package = pkgs.dracula-theme;
     };
   };
 }

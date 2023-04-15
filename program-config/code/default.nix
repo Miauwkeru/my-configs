@@ -7,13 +7,17 @@
       ms-python.python
       ms-python.vscode-pylance
       eamodio.gitlens
-    ];
+    ] ++ (
+      if (config.gtk.theme.name == "Dracula" )
+      then [
+        dracula-theme.theme-dracula
+       ] else []
+    );
     userSettings = builtins.fromJSON (
       builtins.readFile ./settings.json
     ) // {
-        "terminal.integrated.fontFamily" = "'FiraCode Nerd Font'";
-        "editor.fontFamily" = "'FiraCode Nerd Font'";
-        "editor.codeLensFontFamily" = "'FiraCode Nerd Font'";
+      "workbench.preferredDarkColorTheme" = "${config.gtk.theme.name}";
+      "workbench.colorTheme" = "${config.gtk.theme.name}";
     };
   };
 }

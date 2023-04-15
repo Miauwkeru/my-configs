@@ -1,3 +1,6 @@
 {
-    "telemtry.telemetryLevel": "off"
+    "telemetry.telemetryLevel": "off",
+    "terminal.integrated.fontFamily" : "'FiraCode Nerd Font'",
+    "editor.fontFamily" : "'FiraCode Nerd Font'",
+    "editor.codeLensFontFamily" : "'FiraCode Nerd Font'"
 }

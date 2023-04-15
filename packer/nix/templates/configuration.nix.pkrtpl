@@ -14,7 +14,7 @@
   # Install minimal packages needed for provisioning
   environment.systemPackages = with pkgs; [
     git
-    xev
+    xorg.xev
   ];
 
   services = {
@@ -73,6 +73,12 @@
     useUserPackages = true;
     useGlobalPkgs = true;
   };
+
+  fonts.fonts = with pkgs; [
+    (nerdfonts.override {
+      fonts = ["FiraCode"];
+    })
+  ];
 
   # Pin the specific state version of NixOS
   system.stateVersion = "22.11";

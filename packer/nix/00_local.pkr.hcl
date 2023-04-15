@@ -1,8 +1,10 @@
 locals {
   pkg_dir = "home/${var.user}/.config/nixpkgs"
 
-  nix_files = var.nix_home_path != null ? fileset(var.nix_home_path, "**") : []
-  main_includes = var.nix_home_path != null ? fileset(var.nix_home_path, "*") : []
+  nix_files     = var.nix_home_path != null ? fileset(var.nix_home_path, "**") : []
+  all_dirs      = setunion([for file in local.nix_files : dirname(file)])
+  main_includes = setunion([for test in local.all_dirs : split("/", test)[0]])
+
 
   boot_command = concat(
     [
@@ -24,7 +26,7 @@ locals {
       "sed -zi 's|fsType = \"btrfs\";|fsType = \"btrfs\";\n    options = [ \"discard\" \"compress=lzo\" ];|g' /mnt/etc/nixos/hardware-configuration.nix<enter><wait>",
     ],
     [
-      for directory in setunion([for file in local.nix_files : dirname(file)]) :
+      for directory in local.all_dirs :
       "mkdir -p /mnt/${local.pkg_dir}/${directory}<enter><wait>"
     ],
     [
@@ -42,7 +44,7 @@ locals {
   vm_dir = "/dev/shm/${var.vm_name}.qemu-vm"
 
   http_content = merge(
-    {for x in local.nix_files : "/home_manager_data/${x}" => file("${var.nix_home_path}/${x}")},
+    { for x in local.nix_files : "/home_manager_data/${x}" => file("${var.nix_home_path}/${x}") },
     {
       "/configuration.nix" = templatefile("templates/configuration.nix.pkrtpl", {
         user       = var.user,

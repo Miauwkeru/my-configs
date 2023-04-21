@@ -43,6 +43,6 @@ build {
   }
 
   post-processor "shell-local" {
-    inline = ["mv ${source.output_directory} ${var.vm_dir}"]
+    inline = ["mv ${local.vm_dir} ${var.vm_dir}"]
   }
 }

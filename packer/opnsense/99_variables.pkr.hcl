@@ -29,7 +29,7 @@ variable "vm_name" {
 }
 
 variable "vm_dir" {
-  type        = string
   description = "Path where the vm will get stored once creation is complete."
+  type        = string
   default     = "~/vms"
 }

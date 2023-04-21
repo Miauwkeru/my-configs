@@ -1,0 +1,15 @@
+- name: Configure network interfaces
+  hosts: all
+  gather_facts: no
+  become: yes
+
+  tasks:
+    - name: Load network interface information
+      set_fact:
+        vyos_interfaces: "{{ lookup('file', json_location) | from_json }}"
+
+    - name: Configure interfaces
+      vars:
+        iface: "{{ item.iface }}"
+      include_tasks: "{{ item.name }}.yml"
+      loop: "{{ vyos_interfaces }}"

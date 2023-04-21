@@ -1,2 +1,8 @@
 isos/
 keys/
+
+# Ignore terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate*
+vyos_interfaces.json

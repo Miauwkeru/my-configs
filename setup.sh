@@ -35,10 +35,11 @@ build_image () {
 
 orchestrate () {
     local tf_command=$1
-    pushd Terraform
-        terraform ${tf_command} -var pool_path="$HOME/VMs"
+    pushd terraform
+        terraform ${tf_command} -var pool_path="$HOME/VMs" -var output_directory="${OUTPUT_DIR}"
     popd
 }
 
 
 build_image packer/vyos
+orchestrate "apply"

@@ -1,0 +1,31 @@
+---
+- name: Restrict to internal network
+  vyos.vyos.vyos_firewall_rules:
+    config:
+      - afi: ipv4
+        rule_sets:
+          - name: RESTRICT_DATA
+            description: Blocking data to internal resources
+            default_action: accept
+            rules:
+              - number: 10
+                action: drop
+                destination:
+                  address: "{{ internal_address }}"
+                source:
+                  address: 10.0.0.0/8
+                protocol: all
+    state: replaced
+
+- name: Attach to interface
+  vyos.vyos.vyos_firewall_interfaces:
+    config:
+      - access_rules:
+        - afi: ipv4
+          rules:
+            - name: RESTRICT_DATA
+              direction: out
+        name: "{{ iface }}"
+
+    state: replaced
+

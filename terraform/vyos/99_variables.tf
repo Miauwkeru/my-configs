@@ -10,3 +10,11 @@ variable "output_directory" {
 variable "image_pool_name" {
   type = string
 }
+
+variable "network_interfaces" {
+  description = "Network interfaces to attach to the vyos image."
+  type = list(object({
+    name = string
+    id = string
+  }))
+}

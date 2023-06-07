@@ -9,6 +9,11 @@ module "router-instance" {
 
   output_directory = var.output_directory
   image_pool_name  = libvirt_pool.image_pool.name
+  # Attach network interfaces to the router instance
+  network_interfaces = [for s in libvirt_network.networks: {
+    name = s.name
+    id   = s.id
+  }]
 }
 
 resource "null_resource" "export_network_info" {
@@ -30,4 +35,11 @@ resource "null_resource" "export_network_info" {
         ${path.cwd}/../ansible/configure_network.yml
     EOF
   }
+}
+
+resource "libvirt_network" "networks" {
+  for_each  = toset(var.networks)
+  name   = each.key
+  
+  autostart = true
 }

@@ -28,4 +28,3 @@
         name: "{{ iface }}"
 
     state: replaced
-

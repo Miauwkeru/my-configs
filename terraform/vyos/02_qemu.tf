@@ -15,6 +15,13 @@ resource "libvirt_domain" "vyos_router" {
     mac            = "AA:BB:CC:11:22:22"
   }
 
+  dynamic "network_interface" {
+    for_each = var.network_interfaces
+    content {
+      network_name = network_interface.value.name
+      network_id = network_interface.value.id
+    }
+  }
 }
 
 resource "libvirt_volume" "vyos_disk_image" {

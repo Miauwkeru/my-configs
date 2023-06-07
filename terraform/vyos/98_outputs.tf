@@ -1,5 +1,7 @@
 output "provision_address" {
-  value = libvirt_domain.vyos_router.network_interface[0].addresses[0]
+  value = flatten([
+    for obj in libvirt_domain.vyos_router.network_interface : obj.addresses[*] if obj.network_id == libvirt_network.main_nat.id
+  ])[0]
 }
 
 output "network_interfaces" {

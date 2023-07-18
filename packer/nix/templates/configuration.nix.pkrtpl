@@ -1,5 +1,4 @@
 { config, pkgs, ... }:
-
 {
   imports = [
     ./hardware-configuration.nix
@@ -81,5 +80,5 @@
   ];
 
   # Pin the specific state version of NixOS
-  system.stateVersion = "22.11";
+  system.stateVersion = "${nix_version}";
 }

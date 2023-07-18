@@ -1,5 +1,6 @@
 locals {
   pkg_dir = "home/${var.user}/.config/nixpkgs"
+  home_manager_dir = "home/${var.user}/.config/home-manager"
 
   nix_files     = var.nix_home_path != null ? fileset(var.nix_home_path, "**") : []
   all_dirs      = setunion([for file in local.nix_files : dirname(file)])
@@ -17,9 +18,10 @@ locals {
       "mount -o discard,compress=lzo LABEL=nixos /mnt<enter><wait>",
       "swapon /dev/vda2<enter><wait>",
       "nixos-generate-config --root /mnt<enter><wait>",
-      "nix-channel --add https://github.com/nix-community/home-manager/archive/release-22.11.tar.gz home-manager<enter><wait>",
+      "nix-channel --add https://github.com/nix-community/home-manager/archive/release-${var.nix_version}.tar.gz home-manager<enter><wait>",
       "nix-channel --update<enter><wait10s>",
       "mkdir -p /mnt/${local.pkg_dir}<enter><wait>",
+      "mkdir -p /mnt/${local.home_manager_dir}",
       "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/configuration.nix > /mnt/etc/nixos/configuration.nix<enter><wait>",
       "echo '{ allowUnfree = true; }' > /mnt/${local.pkg_dir}/config.nix<enter><wait>",
       "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/home.nix > /mnt/${local.pkg_dir}/home.nix<enter><wait>",
@@ -27,11 +29,11 @@ locals {
     ],
     [
       for directory in local.all_dirs :
-      "mkdir -p /mnt/${local.pkg_dir}/${directory}<enter><wait>"
+      "mkdir -p /mnt/${local.home_manager_dir}/${directory}<enter><wait>"
     ],
     [
       for x in local.nix_files :
-      "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/home_manager_data/${x} > /mnt/${local.pkg_dir}/${x}<enter><wait>"
+      "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/home_manager_data/${x} > /mnt/${local.home_manager_dir}/${x}<enter><wait>"
     ],
     [
       "nixos-install<enter>",
@@ -48,9 +50,10 @@ locals {
     {
       "/configuration.nix" = templatefile("templates/configuration.nix.pkrtpl", {
         user       = var.user,
-        public_key = data.sshkey.install.public_key
+        public_key = file("${var.private_ssh_key}.pub"),
+        nix_version = var.nix_version
       }),
-      "/home.nix" = templatefile("templates/home.nix.pkrtpl", { user = var.user, includes = local.main_includes }),
+      "/home.nix" = templatefile("templates/home.nix.pkrtpl", { user = var.user, includes = local.main_includes, nix_version = var.nix_version }),
     }
   )
 }

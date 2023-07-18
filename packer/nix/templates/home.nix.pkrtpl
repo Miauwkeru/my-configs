@@ -34,7 +34,7 @@
   xdg.enable = true;
 
   # Enable bash
-  programs { 
+  programs = { 
     bash.enable = true;
     home-manager.enable = true;
   };
@@ -45,7 +45,7 @@
   home = {
     username = "${user}";
     homeDirectory = "/home/${user}";
-    stateVersion = "22.11";
+    stateVersion = "${nix_version}";
   };
 
   gtk = {

@@ -1,5 +1,5 @@
 isos/
-keys/
+.keys/
 
 # Ignore terraform
 .terraform/

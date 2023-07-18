@@ -7,7 +7,7 @@ source "qemu" "nixos" {
 
   communicator         = "ssh"
   ssh_username         = var.user
-  ssh_private_key_file = data.sshkey.install.private_key_path
+  ssh_private_key_file = var.private_ssh_key
   ssh_timeout          = "${var.ssh_timeout}"
 
   cpus     = 4
@@ -35,7 +35,7 @@ build {
 
   provisioner "shell" {
     inline = [
-      "echo 'password' | sudo -S nix-channel --add https://github.com/nix-community/home-manager/archive/release-22.11.tar.gz home-manager",
+      "echo 'password' | sudo -S nix-channel --add https://github.com/nix-community/home-manager/archive/release-${var.nix_version}.tar.gz home-manager",
       "echo 'password' | sudo -S nix-channel --update",
       "echo 'password' | sudo -S nix-shell '<home-manager>' -A install",
       "nix-shell -p home-manager --run 'home-manager switch'",

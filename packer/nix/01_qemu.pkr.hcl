@@ -34,6 +34,30 @@ build {
   sources = ["source.qemu.nixos"]
 
   provisioner "shell" {
+    inline = concat(
+      [
+        "mkdir -p ${local.home_manager_dir}"
+      ],
+      [
+        for directory in local.all_dirs :
+        "mkdir -p ${local.home_manager_dir}/${directory}"
+      ]
+    )
+
+  }
+
+  provisioner "file" {
+    content     = templatefile("templates/home.nix.pkrtpl", 
+      { user = var.user, includes = local.main_includes, nix_version = var.nix_version })
+    destination = "${local.home_manager_dir}/home.nix"
+  }
+
+  provisioner "file" {
+    sources     = [ for nix_file in local.nix_files: "${var.nix_home_path}/${nix_file}" ]
+    destination = local.home_manager_dir
+  }
+
+  provisioner "shell" {
     inline = [
       "echo 'password' | sudo -S nix-channel --add https://github.com/nix-community/home-manager/archive/release-${var.nix_version}.tar.gz home-manager",
       "echo 'password' | sudo -S nix-channel --update",

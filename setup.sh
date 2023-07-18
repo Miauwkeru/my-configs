@@ -19,6 +19,8 @@ create_ssh_key() {
 build_image() {
 	local directory=$1
 	local image=$(basename $1)
+	shift
+	local additional_vars="$@"
 	local output=${OUTPUT_DIR}/${image}*/${image}*.qcow2
 
 	if [[ $output != *"*"* ]]; then
@@ -28,7 +30,7 @@ build_image() {
 
 	pushd ${directory}
 	create_ssh_key "${image}-ed25519" "-t ed25519"
-	packer build -var private_ssh_key="${KEY_DIR}/${image}-ed25519" .
+	packer build -var private_ssh_key="${KEY_DIR}/${image}-ed25519" $additional_vars .
 	popd
 }
 
@@ -39,5 +41,5 @@ orchestrate() {
 	popd
 }
 
-build_image packer/nix
+build_image packer/nix -var nix_home_path=$PWD/program-config
 #orchestrate "apply"

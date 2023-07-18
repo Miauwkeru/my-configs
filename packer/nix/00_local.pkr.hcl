@@ -1,5 +1,11 @@
 locals {
-  pkg_dir = "home/${var.user}/.config/nixpkgs"
+  pkg_dir          = "home/${var.user}/.config/nixpkgs"
+  home_manager_dir = "/home/${var.user}/.config/home-manager"
+
+  nix_files     = var.nix_home_path != null ? fileset(var.nix_home_path, "**") : []
+  all_dirs      = setunion([for file in local.nix_files : dirname(file)])
+  main_includes = setunion([for test in local.all_dirs : split("/", test)[0]])
+
 
   boot_command = [
     "sudo su<enter><wait>",
@@ -11,18 +17,25 @@ locals {
     "mount -o discard,compress=lzo LABEL=nixos /mnt<enter><wait>",
     "swapon /dev/vda2<enter><wait>",
     "nixos-generate-config --root /mnt<enter><wait>",
-    "nix-channel --add https://github.com/nix-community/home-manager/archive/release-22.11.tar.gz home-manager<enter><wait>",
+    "nix-channel --add https://github.com/nix-community/home-manager/archive/release-${var.nix_version}.tar.gz home-manager<enter><wait>",
     "nix-channel --update<enter><wait10s>",
     "mkdir -p /mnt/${local.pkg_dir}<enter><wait>",
-    "echo '{ allowUnfree = true; }' > /mnt/${local.pkg_dir}/config.nix<enter><wait>",
-    "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/home.nix > /mnt/${local.pkg_dir}/home.nix<enter><wait>",
-    "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/code.nix > /mnt/${local.pkg_dir}/code.nix<enter><wait>",
     "curl http://{{ .HTTPIP }}:{{ .HTTPPort }}/configuration.nix > /mnt/etc/nixos/configuration.nix<enter><wait>",
+    "echo '{ allowUnfree = true; }' > /mnt/${local.pkg_dir}/config.nix<enter><wait>",
     "sed -zi 's|fsType = \"btrfs\";|fsType = \"btrfs\";\n    options = [ \"discard\" \"compress=lzo\" ];|g' /mnt/etc/nixos/hardware-configuration.nix<enter><wait>",
     "nixos-install<enter>",
     "<wait2m>${var.root_pw}<enter><wait>${var.root_pw}<enter><wait>",
     "chown -R 1000:users /mnt/home/${var.user}/.config<enter><wait>",
     "reboot<enter>"
   ]
+
   vm_dir = "/dev/shm/${var.vm_name}.qemu-vm"
+
+  http_content = {
+    "/configuration.nix" = templatefile("templates/configuration.nix.pkrtpl", {
+      user        = var.user,
+      public_key  = file("${var.private_ssh_key}.pub"),
+      nix_version = var.nix_version
+    })
+  }
 }

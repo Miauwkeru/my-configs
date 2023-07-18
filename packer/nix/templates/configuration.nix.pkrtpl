@@ -1,5 +1,4 @@
 { config, pkgs, ... }:
-
 {
   imports = [
     ./hardware-configuration.nix
@@ -14,6 +13,7 @@
   # Install minimal packages needed for provisioning
   environment.systemPackages = with pkgs; [
     git
+    xorg.xev
   ];
 
   services = {
@@ -73,6 +73,12 @@
     useGlobalPkgs = true;
   };
 
+  fonts.fonts = with pkgs; [
+    (nerdfonts.override {
+      fonts = ["FiraCode"];
+    })
+  ];
+
   # Pin the specific state version of NixOS
-  system.stateVersion = "22.11";
+  system.stateVersion = "${nix_version}";
 }

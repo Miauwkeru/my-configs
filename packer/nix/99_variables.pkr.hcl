@@ -5,12 +5,12 @@ variable "disk_size" {
 
 variable "iso_checksum" {
   type    = string
-  default = "sha256:54d1f06fd8042ecc2f691d09a0231a62f4d4c7c3816d8c9602ad9e2c14b72970"
+  default = "sha256:eaff593c1e9acc22ed87ae39d480df80a4ec6c3ee06f2f889250193d8e4f1cca"
 }
 
 variable "iso_url" {
   type    = string
-  default = "https://channels.nixos.org/nixos-22.11/latest-nixos-minimal-x86_64-linux.iso"
+  default = "https://channels.nixos.org/nixos-23.05/latest-nixos-minimal-x86_64-linux.iso"
 }
 
 variable "restart_timeout" {
@@ -36,4 +36,27 @@ variable "root_pw" {
 variable "user" {
   type    = string
   default = "user"
+}
+
+variable "nix_home_path" {
+  type        = string
+  description = "Path to a nix file directory."
+  default     = null
+}
+
+variable "vm_dir" {
+  type        = string
+  description = "Path where the vm will get stored once creation is complete."
+  default     = "~/vms"
+}
+
+variable "nix_version" {
+  type        = string
+  description = "The version of nixos to install."
+  default     = "23.05"
+}
+
+variable "private_ssh_key" {
+  type        = string
+  description = "A private ssh key used to communicate with the instance."
 }

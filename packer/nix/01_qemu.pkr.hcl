@@ -53,8 +53,8 @@ build {
   }
 
   provisioner "file" {
-    sources     = [ for nix_file in local.nix_files: "${var.nix_home_path}/${nix_file}" ]
-    destination = local.home_manager_dir
+    sources     = [ for nix_folder in local.all_dirs: "${var.nix_home_path}/${nix_folder}" ]
+    destination = "${local.home_manager_dir}/"
   }
 
   provisioner "shell" {

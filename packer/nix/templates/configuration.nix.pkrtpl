@@ -7,7 +7,6 @@
 
   # Use the GRUB 2 boot loader.
   boot.loader.grub.enable = true;
-  boot.loader.grub.version = 2;
   boot.loader.grub.device = "/dev/vda";
 
   # Install minimal packages needed for provisioning
@@ -22,8 +21,10 @@
 
     openssh = {
       enable = true;
-      passwordAuthentication = false;
-      permitRootLogin = "no";
+      settings = {
+        PermitRootLogin = "no";
+        PasswordAuthentication = false;
+      };
     };
     xserver = {
       enable = true;

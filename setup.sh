@@ -28,9 +28,11 @@ build_image() {
 		return
 	fi
 
+	random_pw="tr -dc '[:graph:]' </dev/urandom | head -c 32"
+
 	pushd ${directory}
 	create_ssh_key "${image}-ed25519" "-t ed25519"
-	packer build -var private_ssh_key="${KEY_DIR}/${image}-ed25519" $additional_vars .
+	packer build -var private_ssh_key="${KEY_DIR}/${image}-ed25519" -var root_pw=$(random_pw) $additional_vars .
 	popd
 }
 

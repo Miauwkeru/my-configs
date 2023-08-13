@@ -21,7 +21,6 @@ $character\
 
 command_timeout = 5000
 
-
 [character] # The name of the module we are configuring is 'character'
 success_symbol = '[❯](bold green)'
 error_symbol = '[✗](bold red)'
@@ -50,6 +49,7 @@ read_only = " "
 "Music" = ""
 "Pictures" = ""
 "Important " = ""
+"development" = "󰵮"
 
 [docker_context]
 symbol = ""
@@ -69,6 +69,12 @@ format = '[ $symbol $branch ]($style)'
 [git_status]
 style = "bg:#4C566A"
 format = '[$all_status$ahead_behind ]($style)'
+
+[nix_shell]
+format = '[ $symbol $state ]($style)'
+style = "fg:#4C566A bg:#86BBD8"
+symbol = "󱄅"
+impure_msg = "*"
 
 [c]
 symbol = ""
@@ -95,6 +101,7 @@ disabled = false
 time_format = "%R" # Hour:Minute Format
 style = "bg:#33658A"
 format = '[ $time ]($style)'
+
 
 [cmd_duration]
 disabled = false
